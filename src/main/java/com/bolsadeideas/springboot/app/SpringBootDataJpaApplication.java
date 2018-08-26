@@ -14,9 +14,11 @@ public class SpringBootDataJpaApplication implements CommandLineRunner {
 	@Autowired
 	IUploadFileService uploadFileService;
 
+
 //	
 //	@Autowired
 //	private BCryptPasswordEncoder passwordEncoder;
+
 
 
 	public static void main(String[] args) {
