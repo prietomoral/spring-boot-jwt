@@ -13,9 +13,15 @@ public class SpringBootDataJpaApplication implements CommandLineRunner {
 
 	@Autowired
 	IUploadFileService uploadFileService;
+<<<<<<< HEAD
+//	
+//	@Autowired
+//	private BCryptPasswordEncoder passwordEncoder;
+=======
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+>>>>>>> branch 'master' of https://github.com/prietomoral/spring-boot-jwt.git
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootDataJpaApplication.class, args);
