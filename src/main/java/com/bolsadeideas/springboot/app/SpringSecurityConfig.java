@@ -10,6 +10,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.bolsadeideas.springboot.app.auth.filter.JWTAuthenticationFilter;
+import com.bolsadeideas.springboot.app.auth.filter.JWTAuthorizationFilter;
+import com.bolsadeideas.springboot.app.auth.service.JWTService;
 import com.bolsadeideas.springboot.app.models.service.JpaUserDetailsService;
 
 @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true)
@@ -24,6 +26,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JWTService jwtService;
+
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -45,8 +51,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 //		.and()
 //		.exceptionHandling().accessDeniedPage("/error_403")
 		.and()
-		.addFilter(new JWTAuthenticationFilter(authenticationManager(), null))
-//		.addFilter(new JWTAuthorizationFilter(authenticationManager()))
+		.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtService))
+	//	.addFilter(new JWTAuthorizationFilter(authenticationManager(),jwtService))
 		.csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
