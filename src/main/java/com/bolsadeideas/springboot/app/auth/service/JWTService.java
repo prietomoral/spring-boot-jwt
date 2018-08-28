@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import io.jsonwebtoken.Claims;
 
+
+
 public interface JWTService {
 
 	public String create(Authentication auth) throws IOException;

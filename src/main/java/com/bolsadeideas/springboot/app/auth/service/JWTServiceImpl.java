@@ -1,6 +1,7 @@
 package com.bolsadeideas.springboot.app.auth.service;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -19,16 +20,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JWTServiceImpl implements JWTService {
 
 	public static final String SECRET = Base64Utils.encodeToString("Alguna.Clave.Secreta.123456".getBytes());
-	
+
 	public static final long EXPIRATION_DATE = 14000000L;// 4 horas
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
-	
+
 	@Override
 	public String create(Authentication auth) throws IOException {
 
@@ -39,8 +41,8 @@ public class JWTServiceImpl implements JWTService {
 		Claims claims = Jwts.claims();
 		claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
 
-		String token = Jwts.builder().setClaims(claims).setSubject(username)
-				.signWith(SignatureAlgorithm.HS512, SECRET.getBytes()).setIssuedAt(new Date())
+		Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512); // aquí genera una llave secreta por nosotros
+		String token = Jwts.builder().setClaims(claims).setSubject(username).signWith(secretKey).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE)).compact();
 
 		return token;
@@ -62,8 +64,7 @@ public class JWTServiceImpl implements JWTService {
 
 	@Override
 	public Claims getClaims(String token) {
-		Claims claims = Jwts.parser().setSigningKey(SECRET.getBytes())
-				.parseClaimsJws(resolve(token)).getBody();
+		Claims claims = Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(resolve(token)).getBody();
 		return claims;
 	}
 
