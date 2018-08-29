@@ -45,23 +45,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String username = obtainUsername(request);
 		String password = obtainPassword(request);
 
-	
-
 		if (username != null && password != null) {
 			logger.info("Username desde request parameter (form-data):" + username);
 			logger.info("Password desde request parameter (form-data):" + password);
-		}else {
+		} else {
 			Usuario user = null;
 			try {
-				
+
 				user = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
-				
+
 				username = user.getUsername();
 				password = user.getPassword();
-				
+
 				logger.info("Username desde request InputStream (raw): " + username);
 				logger.info("Password desde request InputStream (raw): " + password);
-				
+
 			} catch (JsonParseException e) {
 				e.printStackTrace();
 			} catch (JsonMappingException e) {
@@ -81,35 +79,44 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		
+
 		String username = ((User) authResult.getPrincipal()).getUsername();
-		
+
 		authResult.getAuthorities();
 		Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
-		
+
 		Claims claims = Jwts.claims();
 		claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
 
-		
-		
-		String token = Jwts.builder()
-						.setClaims(claims)
-						.setSubject(username)
-						.signWith(SignatureAlgorithm.HS512, "Alguna.Clave.Secreta.123456".getBytes())
-						.setIssuedAt(new Date())
-						.setExpiration(new Date(System.currentTimeMillis() + 1400000L))//4 horas = 3600000*4
-						.compact();
-		
+		String token = Jwts.builder().setClaims(claims).setSubject(username)
+				.signWith(SignatureAlgorithm.HS512, "Alguna.Clave.Secreta.123456".getBytes()).setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + 1400000L))// 4 horas = 3600000*4
+				.compact();
+
 		response.addHeader("Authorization", "Bearer " + token);
 
-		//JSON
+		// JSON
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("token", token);
 		body.put("user", (User) authResult.getPrincipal());
-		body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!", ((User)authResult.getPrincipal()).getUsername()) );
-		
+		body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!",
+				((User) authResult.getPrincipal()).getUsername()));
+
 		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 		response.setStatus(200);
+		response.setContentType("application/json");
+
+	}
+
+	@Override
+	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException failed) throws IOException, ServletException {
+		Map<String, Object> body = new HashMap<String, Object>();
+		body.put("mensaje", "Error de autenticación: username o password incorrecto!");
+		body.put("error", failed.getMessage());
+
+		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+		response.setStatus(401);
 		response.setContentType("application/json");
 
 	}
