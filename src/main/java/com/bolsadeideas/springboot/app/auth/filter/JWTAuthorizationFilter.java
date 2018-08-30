@@ -6,61 +6,16 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-<<<<<<< HEAD
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
 
 import com.bolsadeideas.springboot.app.auth.service.JWTService;
 import com.bolsadeideas.springboot.app.auth.service.JWTServiceImpl;
 
 
-public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
-	private JWTService jwtService;
-
-	public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
-		super(authenticationManager);
-
-		this.jwtService = jwtService;
-
-	}
-
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-
-		String header = request.getHeader(JWTServiceImpl.HEADER_STRING);
-
-		if (!requiresAuthentication(header)) {
-			chain.doFilter(request, response);
-			return;
-		}
-
-		UsernamePasswordAuthenticationToken authentication = null;
-		if (jwtService.validate(header)) {
-
-			// Collection<? extends GrantedAuthority> authories = Arrays.asList(new
-			// ObjectMapper().readValue(roles.toString().getBytes(),SimpleGrantedAuthority[].class));
-
-			authentication = new UsernamePasswordAuthenticationToken(jwtService.getUsername(header), null,
-					jwtService.getRoles(header));
-
-		}
-
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		chain.doFilter(request, response);
-=======
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import com.bolsadeideas.springboot.app.auth.service.JWTService;
-import com.bolsadeideas.springboot.app.auth.service.JWTServiceImpl;
 
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
@@ -92,7 +47,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		chain.doFilter(request, response);
 		
->>>>>>> branch 'master' of https://github.com/prietomoral/spring-boot-jwt.git
+
 	}
 
 	protected boolean requiresAuthentication(String header) {
