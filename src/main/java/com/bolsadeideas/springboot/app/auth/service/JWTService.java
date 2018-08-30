@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import io.jsonwebtoken.Claims;
 
+<<<<<<< HEAD
 public interface JWTService {
 	public String create(Authentication auth) throws IOException;
 	public boolean validate(String token);
@@ -16,4 +17,16 @@ public interface JWTService {
 	public Collection<? extends GrantedAuthority> getRoles(String token) throws IOException;
 	public String resolve(String token);
 
+=======
+
+
+public interface JWTService {
+
+	public String create(Authentication auth) throws IOException;
+	public boolean validate(String token);
+	public Claims getClaims(String token);
+	public String getUsername(String token);
+	public Collection<? extends GrantedAuthority> getRoles(String token) throws IOException;
+	public String resolve(String token);
+>>>>>>> branch 'master' of https://github.com/prietomoral/spring-boot-jwt.git
 }

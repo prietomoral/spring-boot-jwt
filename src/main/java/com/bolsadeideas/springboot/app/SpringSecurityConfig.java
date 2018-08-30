@@ -12,14 +12,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.bolsadeideas.springboot.app.auth.filter.JWTAuthenticationFilter;
 import com.bolsadeideas.springboot.app.auth.filter.JWTAuthorizationFilter;
 import com.bolsadeideas.springboot.app.auth.service.JWTService;
+<<<<<<< HEAD
+=======
+/*import com.bolsadeideas.springboot.app.auth.handler.LoginSuccessHandler;*/
+>>>>>>> branch 'master' of https://github.com/prietomoral/spring-boot-jwt.git
 import com.bolsadeideas.springboot.app.models.service.JpaUserDetailsService;
 
 @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true)
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 
+<<<<<<< HEAD
 //	@Autowired
 //	private LoginSuccessHandler successHandler;
+=======
+	/*
+	 * @Autowired
+	private LoginSuccessHandler successHandler;
+	*/
+>>>>>>> branch 'master' of https://github.com/prietomoral/spring-boot-jwt.git
 	
 	@Autowired
 	private JpaUserDetailsService userDetailsService;
@@ -35,11 +46,33 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 
 		http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar**", "/locale").permitAll()
 		.anyRequest().authenticated()
+<<<<<<< HEAD
 		.and()
 		.addFilter(new JWTAuthenticationFilter(authenticationManager(),jwtService))
 		.addFilter(new JWTAuthorizationFilter(authenticationManager(),jwtService))
 		.csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);;
+=======
+		
+		/*
+		 * .and()
+		    .formLogin()
+		        .successHandler(successHandler)
+		        .loginPage("/login")
+		    .permitAll()
+		.and()
+		.logout().permitAll()
+		.and()
+		.exceptionHandling().accessDeniedPage("/error_403")
+		*
+		*/
+		
+		.and()
+		.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtService))
+		.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtService))
+		.csrf().disable()
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+>>>>>>> branch 'master' of https://github.com/prietomoral/spring-boot-jwt.git
 
 	}
 
@@ -48,6 +81,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	{
 		build.userDetailsService(userDetailsService)
 		.passwordEncoder(passwordEncoder);
-
 	}
 }
